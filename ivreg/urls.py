@@ -1,4 +1,4 @@
-"""voting_authorization URL Configuration
+"""ivreg URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.10/topics/http/urls/
@@ -16,6 +16,13 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
+from ivreg import views
+
 urlpatterns = [
+    url(r'^$', views.index),
+    url(r'^registration/$', views.registration, name='registration'),
+    url(r'^authorization/$', views.ballot, name='authorization'),
+    url(r'^validate/$', views.validate, name='validate'),
+    url(r'^ballot/(?P<ballot_id>[0-9a-zA-Z]+)/$', views.ballot, name='ballot'),
     url(r'^admin/', admin.site.urls),
 ]
