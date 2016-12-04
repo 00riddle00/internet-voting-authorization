@@ -61,7 +61,13 @@ def validate(request):
 
 
 def authorization(request):
-    return redirect('http://localhost:80/ballot/2EIWLRVNVNCXFHQDOLXQGIHHAI/')
+    return redirect('http://localhost:8000/ballot/2EIWLRVNVNCXFHQDOLXQGIHHAI/')
+
+def authentication(request):
+    # return redirect('http://localhost:8000/authentication/')
+
+    return render(request, 'authentication.html', {})
+ 
 
 
 def ballot(request, ballot_id):
