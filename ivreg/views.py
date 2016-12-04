@@ -61,17 +61,19 @@ def validate(request):
 
 
 def authorization(request):
-    return redirect('http://localhost:80/ballot/2EIWLRVNVNCXFHQDOLXQGIHHAI/')
+
+    ballot_id = generate_ballot_id()
+
+    return redirect('http://0.0.0.0:8000/ballot/{}'.format(ballot_id))
 
 
 def ballot(request, ballot_id):
 
     voter = Voter.objects.create(
         voter_id=123,
-        ballot_id=generate_ballot_id(),
+        ballot_id=ballot_id,
         candidates=json.dumps(generate_candidate_codes(CANDIDATES))
     )
-
 
     ballot_id = voter.ballot_id
     ballot = Voter.objects.get(ballot_id=ballot_id.upper())
