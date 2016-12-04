@@ -6,7 +6,7 @@ class VoterData(models.Model):
 
     name = models.CharField(max_length=36, verbose_name="Vardas")
     surname = models.CharField(max_length=36, verbose_name="Pavardė")
-    id_code = models.CharField(max_length=36, verbose_name="Asmens Kodas")
+    id_code = models.IntegerField(max_length=36, verbose_name="Asmens Kodas")
 
 
 class Voter(models.Model):

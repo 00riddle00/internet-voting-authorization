@@ -1,4 +1,5 @@
 import json
+import requests
 
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -24,6 +25,7 @@ def index(request):
 
 def registration(request):
     if request.method == "POST":
+        print("POST pavyko")
         if request.content_type == 'application/json':
             data = json.loads(request.body.decode('utf-8'))
         else:
@@ -63,6 +65,15 @@ def validate(request):
         return JsonResponse({'errors': 'Only POST method allowed.'})
 
 
+def document_exists(document, *args, **kwargs):
+    try:
+        return document.objects.get(*args, **kwargs)
+    except document.DoesNotExist:
+        return False
+
+
+
+
 def credentials(request):
     if request.method == "POST":
         data = request.POST
@@ -70,16 +81,34 @@ def credentials(request):
         form = CredentialsForm(data)
 
         if form.is_valid():
-            # todo try if document exists
-            voter_entry = VoterData.objects.create(
-                name=form.cleaned_data['name'],
-                surname=form.cleaned_data['surname'],
-                id_code=form.cleaned_data['id_code'],
-            )
 
+            if VoterData.objects.filter(id_code=form.cleaned_data['id_code']).exists():
 
-            voter_id = generate_voter_id()
-            return redirect('http://0.0.0.0:8000/authorization/{}'.format(voter_id))
+                form = CredentialsForm()
+
+                return render(request, 'credentials.html', {
+                    'form': form,
+                    'exists': True,
+                })
+
+            else:
+                voter_entry = VoterData.objects.create(
+                    name=form.cleaned_data['name'],
+                    surname=form.cleaned_data['surname'],
+                    id_code=form.cleaned_data['id_code'],
+                )
+
+                voter_id = generate_voter_id()
+
+                post_data = {'voter_id': voter_id}
+
+                response = requests.post('http://reg.rk.sub.lt/registration/', json=post_data)
+                # content = response.content
+
+                json_data = json.loads(response.text)
+                print('json', json_data)
+
+                return redirect(json_data['redirect'])
 
         else:
             # todo doc exists check
@@ -94,7 +123,7 @@ def credentials(request):
 
 
 def authorization(request, voter_id=None):
-    if voter_id == "POST":
+    if voter_id:
 
         return render(request, 'authorization.html', {
             'voter_id': voter_id,
