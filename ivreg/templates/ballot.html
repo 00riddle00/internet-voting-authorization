@@ -1,10 +1,65 @@
-{% extends "base.html" %}
+
+<!DOCTYPE html>
+
+{#{% extends "base.html" %}#}
+{##}
+{##}
+{#{% block content %}#}
+{#<h1>Išankstinis registravimasis</h1>#}
+{##}
+{#<p>{{ballot.voter_id}}</p>#}
+{#<p>{{ballot.ballot_id}}</p>#}
+{#<p>{{candidates}}</p>#}
+{#{% endblock %}#}
 
 
-{% block content %}
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet"href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static "css/main.css" %}">
+
+    <meta charset="UTF-8">
+    <title>Internet voting: registration</title>
+
+  </head>
+
+  <body>
+
+<div class="box-list">
+
 <h1>Išankstinis registravimasis</h1>
 
-<p>{{ballot.voter_id}}</p>
-<p>{{ballot.ballot_id}}</p>
-<p>{{candidates}}</p>
-{% endblock %}
+<p>Biuletenio numeris: <strong>LFSFAMW66Z</strong></p>
+<table>
+  <tbody>
+
+    <tr>
+      <td>Darth Vader:</td>
+      <td><strong style="font-family: monospace;font-size: 130%;">AWTJZ</strong></td>
+    </tr>
+
+    <tr>
+      <td>Yoda:</td>
+      <td><strong style="font-family: monospace;font-size: 130%;">O7527</strong></td>
+    </tr>
+
+    <tr>
+      <td>Luke Skywalker:</td>
+      <td><strong style="font-family: monospace;font-size: 130%;">ICUX2</strong></td>
+    </tr>
+
+  </tbody>
+</table>
+
+
+    </div>
+  </body>
+
+</html>

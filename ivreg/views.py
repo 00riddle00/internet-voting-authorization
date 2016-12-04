@@ -8,10 +8,6 @@ from ivreg.models import Voter, VoterData
 from ivreg.forms import RegistrationForm, ValidationForm, CredentialsForm
 from ivreg.services import generate_candidate_codes, generate_ballot_id, generate_voter_id
 
-# for testing
-from django.http import HttpResponse
-
-
 CANDIDATES = [
     'Candidate 1',
     'Candidate 2',
@@ -38,7 +34,8 @@ def registration(request):
                 candidates=json.dumps(generate_candidate_codes(CANDIDATES))
             )
             if request.content_type == 'application/json':
-                return JsonResponse({'redirect': request.build_absolute_uri(voter.get_absolute_url())})
+                return JsonResponse(
+                    {'redirect': request.build_absolute_uri(voter.get_absolute_url())})
             else:
                 return redirect(voter)
     else:
@@ -70,8 +67,6 @@ def document_exists(document, *args, **kwargs):
         return document.objects.get(*args, **kwargs)
     except document.DoesNotExist:
         return False
-
-
 
 
 def credentials(request):
@@ -111,8 +106,12 @@ def credentials(request):
                 return redirect(json_data['redirect'])
 
         else:
-            # todo doc exists check
-            return HttpResponse("Invalid")
+            form = CredentialsForm()
+
+            return render(request, 'credentials.html', {
+                'form': form,
+            })
+
     else:
 
         form = CredentialsForm()
@@ -124,11 +123,9 @@ def credentials(request):
 
 def authorization(request, voter_id=None):
     if voter_id:
-
         return render(request, 'authorization.html', {
             'voter_id': voter_id,
         })
-
 
 
 def ballot(request, ballot_id):

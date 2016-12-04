@@ -1,18 +1,15 @@
 from django import forms
 
-
 from ivreg.models import Voter, VoterData
 
 
 class RegistrationForm(forms.ModelForm):
-
     class Meta:
         model = Voter
         fields = ['voter_id']
 
 
 class ValidationForm(forms.ModelForm):
-
     class Meta:
         model = Voter
         fields = ['ballot_id']
@@ -27,12 +24,7 @@ class ValidationForm(forms.ModelForm):
         return ballot_id
 
 
-
 class CredentialsForm(forms.ModelForm):
-
     class Meta:
         model = VoterData
         fields = ['name', 'surname', 'id_code']
-
-
-

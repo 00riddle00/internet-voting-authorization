@@ -6,14 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="pyramid web application">
     <meta name="author" content="Tomas Giedraitis">
-{#    <link rel="shortcut icon" href="{{ request.static_url('subscriptions:static/subscribe-32x32.png') }}">#}
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    {#    <link rel="shortcut icon" href="{{ request.static_url('subscriptions:static/subscribe-32x32.png') }}">#}
+    <link rel="stylesheet"
+          href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <title>View list of subscriptions</title>
 
     <!-- Custom styles for this scaffold -->
-{#    <link href="{{ request.static_url('subscriptions:static/main.css') }}" rel="stylesheet">#}
+    {#    <link href="{{ request.static_url('subscriptions:static/main.css') }}" rel="stylesheet">#}
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -24,624 +25,644 @@
 <body>
 
 <div class="box-login">
-<p>
-<strong>
-Autorizacija
-</strong><br><br>
-{{ message }}
-</p>
-<form action="{{ url }}" method="post">
-<input type="hidden" name="next" value="{{ next_url }}">
-<div class="form-group">
-    <label for="login">Jūsų sugeneruotas kodas:</label>
-{#    <input type="text" name="login" value="{{ login }}">#}
-</div>
-<div class="form-group">
-{#    <label for="password">Password</label>#}
-{#        <input type="text" id="copyTarget" value="{{ code }}" readonly="readonly" > <button id="copyButton">Copy to clipboard</button><br><br>#}
-    <input type="text" id="copyTarget" value="{{ voter_id }}" readonly="readonly" >
-{#    <input type="password" name="password">#}
-</div>
-<div class="form-group">
-      {% csrf_token %}
-    <button id="copyButton" type="submit" name="form.submitted" value="Log in" class="btn btn-default">Kopijuoti</button>
-</div>
-</form>
+    <p>
+        <strong>
+            Autorizacija
+        </strong><br><br>
+        {{ message }}
+    </p>
+    <form action="{{ url }}" method="post">
+        <input type="hidden" name="next" value="{{ next_url }}">
+        <div class="form-group">
+            <label for="login">Jūsų sugeneruotas kodas:</label>
+            {#    <input type="text" name="login" value="{{ login }}">#}
+        </div>
+        <div class="form-group">
+            {#    <label for="password">Password</label>#}
+            {#        <input type="text" id="copyTarget" value="{{ code }}" readonly="readonly" > <button id="copyButton">Copy to clipboard</button><br><br>#}
+            <input type="text" id="copyTarget" value="{{ voter_id }}" readonly="readonly">
+            {#    <input type="password" name="password">#}
+        </div>
+        <div class="form-group">
+            {% csrf_token %}
+            <button id="copyButton" type="submit" name="form.submitted" value="Log in"
+                    class="btn btn-default">Kopijuoti
+            </button>
+        </div>
+    </form>
 </div>
 
 
-{#<form method="POST">#}
-{#  {% csrf_token %}#}
-{#  {{ form.as_p }}#}
-{#  <p><button type="submit">Registruotis</button></p>#}
-{#</form>#}
+<style>
+    #copyTarget {
+        font-weight: bold;
+        color: #447e9b;
+        font-size: 18px;
+        text-align: center;
+        border-color: lightgrey;
+        border-bottom-right-radius: 3px;
+    }
 
-    <style>
-        #copyTarget {
-            font-weight: bold;
-            color: #447e9b;
-            font-size: 18px;
-            text-align: center;
-            border-color: lightgrey;
-            border-bottom-right-radius: 3px;
+    input {
+    {#            position: relative;#} display: flex;
+        padding: 10px;
+        width: 400px;
+        height: 50px;
+    }
+</style>
+
+<script>
+
+
+    document.getElementById("copyButton").addEventListener("click", function () {
+        copyToClipboard(document.getElementById("copyTarget"));
+    });
+
+    function copyToClipboard(elem) {
+        // create hidden text element, if it doesn't already exist
+        var targetId = "_hiddenCopyText_";
+        var isInput = elem.tagName === "INPUT" || elem.tagName === "TEXTAREA";
+        var origSelectionStart, origSelectionEnd;
+        if (isInput) {
+            // can just use the original source element for the selection and copy
+            target = elem;
+            origSelectionStart = elem.selectionStart;
+            origSelectionEnd = elem.selectionEnd;
+        } else {
+            // must use a temporary form element for the selection and copy
+            target = document.getElementById(targetId);
+            if (!target) {
+                var target = document.createElement("textarea");
+                target.style.position = "absolute";
+                target.style.left = "-9999px";
+                target.style.top = "0";
+                target.id = targetId;
+                document.body.appendChild(target);
+            }
+            target.textContent = elem.textContent;
+        }
+        // select the content
+        var currentFocus = document.activeElement;
+        target.focus();
+        target.setSelectionRange(0, target.value.length);
+
+        // copy the selection
+        var succeed;
+        try {
+            succeed = document.execCommand("copy");
+        } catch (e) {
+            succeed = false;
+        }
+        // restore original focus
+        if (currentFocus && typeof currentFocus.focus === "function") {
+            currentFocus.focus();
         }
 
-        input {
-{#            position: relative;#}
-            display: flex;
-            padding: 10px;
-            width: 400px;
-            height: 50px;
+        if (isInput) {
+            // restore prior selection
+            elem.setSelectionRange(origSelectionStart, origSelectionEnd);
+        } else {
+            // clear temporary content
+            target.textContent = "";
         }
-    </style>
-
-    <script>
-
-
-
-
-    document.getElementById("copyButton").addEventListener("click", function() {
-    copyToClipboard(document.getElementById("copyTarget"));
-});
-
-function copyToClipboard(elem) {
-	  // create hidden text element, if it doesn't already exist
-    var targetId = "_hiddenCopyText_";
-    var isInput = elem.tagName === "INPUT" || elem.tagName === "TEXTAREA";
-    var origSelectionStart, origSelectionEnd;
-    if (isInput) {
-        // can just use the original source element for the selection and copy
-        target = elem;
-        origSelectionStart = elem.selectionStart;
-        origSelectionEnd = elem.selectionEnd;
-    } else {
-        // must use a temporary form element for the selection and copy
-        target = document.getElementById(targetId);
-        if (!target) {
-            var target = document.createElement("textarea");
-            target.style.position = "absolute";
-            target.style.left = "-9999px";
-            target.style.top = "0";
-            target.id = targetId;
-            document.body.appendChild(target);
-        }
-        target.textContent = elem.textContent;
-    }
-    // select the content
-    var currentFocus = document.activeElement;
-    target.focus();
-    target.setSelectionRange(0, target.value.length);
-
-    // copy the selection
-    var succeed;
-    try {
-    	  succeed = document.execCommand("copy");
-    } catch(e) {
-        succeed = false;
-    }
-    // restore original focus
-    if (currentFocus && typeof currentFocus.focus === "function") {
-        currentFocus.focus();
+        return succeed;
     }
 
-    if (isInput) {
-        // restore prior selection
-        elem.setSelectionRange(origSelectionStart, origSelectionEnd);
-    } else {
-        // clear temporary content
-        target.textContent = "";
-    }
-    return succeed;
-}
 
-
-
-    </script>
+</script>
 
 <style>
 
 
-
     @import url(//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700);
 
-body {
-  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: 300;
-  color: #444;
-}
+    body {
+        font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-weight: 300;
+        color: #444;
+    }
 
-h1 {
-  #test {
-    color: blue;
-  }
-}
+    h1 {
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: 300;
-}
+    #test {
+        color: blue;
+    }
 
-p {
-  font-weight: 300;
-}
+    }
 
-.font-normal {
-  font-weight: 400;
-}
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-weight: 300;
+    }
 
-.font-semi-bold {
-  font-weight: 600;
-}
+    p {
+        font-weight: 300;
+    }
 
-.font-bold {
-  font-weight: 700;
-}
+    .font-normal {
+        font-weight: 400;
+    }
 
-.starter-template {
-  margin-top: 250px;
-}
+    .font-semi-bold {
+        font-weight: 600;
+    }
 
-.starter-template .content {
-  margin-left: 10px;
-}
+    .font-bold {
+        font-weight: 700;
+    }
 
-.starter-template .content h1 {
-  margin-top: 10px;
-  font-size: 60px;
-}
+    .starter-template {
+        margin-top: 250px;
+    }
 
-.starter-template .content h1 .smaller {
-  font-size: 40px;
-  color: #f2b7bd;
-}
+    .starter-template .content {
+        margin-left: 10px;
+    }
 
-.starter-template .content .lead {
-  font-size: 25px;
-  color: #f2b7bd;
-}
+    .starter-template .content h1 {
+        margin-top: 10px;
+        font-size: 60px;
+    }
 
-.starter-template .content .lead .font-normal {
-  color: #ffffff;
-}
+    .starter-template .content h1 .smaller {
+        font-size: 40px;
+        color: #f2b7bd;
+    }
 
-.starter-template .links {
-  float: right;
-  right: 0;
-  margin-top: 125px;
-}
+    .starter-template .content .lead {
+        font-size: 25px;
+        color: #f2b7bd;
+    }
 
-@media (max-width: 1199px) {
-  .starter-template .content h1 {
-    font-size: 45px;
-  }
-  .starter-template .content h1 .smaller {
-    font-size: 30px;
-  }
-  .starter-template .content .lead {
-    font-size: 20px;
-  }
-}
+    .starter-template .content .lead .font-normal {
+        color: #ffffff;
+    }
 
-@media (max-width: 991px) {
-  .starter-template {
-    margin-top: 0;
-  }
-  .starter-template .logo {
-    margin: 40px auto;
-  }
-  .starter-template .content {
-    margin-left: 0;
-    text-align: center;
-  }
-  .starter-template .content h1 {
-    margin-bottom: 20px;
-  }
-  .starter-template .links {
-    float: none;
-    text-align: center;
-    margin-top: 60px;
-  }
-  .starter-template .copyright {
-    float: none;
-    text-align: center;
-  }
-}
+    .starter-template .links {
+        float: right;
+        right: 0;
+        margin-top: 125px;
+    }
 
-@media (max-width: 767px) {
-  .starter-template .content h1 .smaller {
-    font-size: 25px;
-    display: block;
-  }
-  .starter-template .content .lead {
-    font-size: 16px;
-  }
-  .starter-template .links {
-    margin-top: 40px;
-  }
-  .starter-template .links ul li {
-    display: block;
-    margin: 0;
-  }
-  .starter-template .links ul li .icon-muted {
-    display: none;
-  }
-  .starter-template .copyright {
-    margin-top: 20px;
-  }
-}
+    @media (max-width: 1199px) {
+        .starter-template .content h1 {
+            font-size: 45px;
+        }
 
-#details {
+        .starter-template .content h1 .smaller {
+            font-size: 30px;
+        }
 
-  input {
-    padding: 15px 15px 15px 15px;
-    margin: 5px;
-    text-align: left;
-  }
+        .starter-template .content .lead {
+            font-size: 20px;
+        }
+    }
 
-}
+    @media (max-width: 991px) {
+        .starter-template {
+            margin-top: 0;
+        }
 
-.outer {
-  padding: 0 3% 0 3%;
-}
+        .starter-template .logo {
+            margin: 40px auto;
+        }
 
-// Handle responsive view
-@media only screen and (max-width: 800px),
-(min-device-width: 800px) and (max-device-width: 1024px) {
+        .starter-template .content {
+            margin-left: 0;
+            text-align: center;
+        }
 
-  .dropdown {
-    margin-bottom: 10px;
-  }
+        .starter-template .content h1 {
+            margin-bottom: 20px;
+        }
 
-  .dropdown-menu {
-    position: absolute;
-    top: 81%;
-    left: 51px;
-    z-index: 1000;
-    display: none;
-    float: left;
-    min-width: 151px;
-    padding: 5px 0;
-    margin: 2px 0 0;
-    font-size: 14px;
-    text-align: left;
-    list-style: none;
-  }
+        .starter-template .links {
+            float: none;
+            text-align: center;
+            margin-top: 60px;
+        }
 
-  .box-list {
-    display: block;
-    text-align: center;
-    padding: 1% 13% 13% 13%;
-  }
+        .starter-template .copyright {
+            float: none;
+            text-align: center;
+        }
+    }
 
-  .button {
-    margin-bottom: 30px;
-  }
+    @media (max-width: 767px) {
+        .starter-template .content h1 .smaller {
+            font-size: 25px;
+            display: block;
+        }
 
-  .box-list table > tbody > tr > td > .delete a {
-    margin-left: 0;
-  }
+        .starter-template .content .lead {
+            font-size: 16px;
+        }
 
-  table, thead, tbody, th, td, tr {
-    display: block;
-    margin-left: 0;
-  }
+        .starter-template .links {
+            margin-top: 40px;
+        }
 
-  thead tr {
-    position: absolute;
-    top: -9999px;
-    left: -9999px;
-  }
+        .starter-template .links ul li {
+            display: block;
+            margin: 0;
+        }
 
-  tr {
-    border: 1px solid #ccc;
-  }
+        .starter-template .links ul li .icon-muted {
+            display: none;
+        }
 
-  td {
-    // retransform table cells to behave like a row
-    text-align: left;
-    border: none;
-    border-bottom: 1px solid #eee;
-    position: relative;
-    padding: 8px 50px 8px 50px;
-    margin-left: 0;
-  }
+        .starter-template .copyright {
+            margin-top: 20px;
+        }
+    }
 
-}
+    #details {
 
-.box-login {
-  display: table;
-  position: relative;
-  margin: 0 auto;
-  margin-top: 2%;
-  background-color: white;
-  padding: 1% 8% 1% 8%;
-  box-shadow: 0 1px 1px #939393;
-  border-radius: 25px 0 25px 0;
-  border-bottom: 4px solid #26a69a;
-  text-align: center;
-  border-top: 1px solid #e6e6e6;
+    input {
+        padding: 15px 15px 15px 15px;
+        margin: 5px;
+        text-align: left;
+    }
 
-  .button {
-    margin: 8% 0 8% 0;
-  }
+    }
 
-  h1 {
-    margin: 8% 0 8% 0;
-  }
+    .outer {
+        padding: 0 3% 0 3%;
+    }
 
-  input {
-    padding: 15px 15px 15px 15px;
-    margin: 20px;
-    text-align: left;
-  }
-}
+    /
+    /
+    Handle responsive view
 
-.fake-input{
-  border:none;
-  background:none;
-  pointer-events:none;
-}
+    @media only screen and (max-width: 800px),
+    (min-device-width: 800px) and (max-device-width: 1024px) {
 
-.edit-div{
-    cursor:pointer;
-    padding: 0.4em;
-    border-radius: 100%;
-    transition: 0.5s all ease;
-}
-.edit-div:hover{
-  background: #e2e2e2;
-  transition: 0.5s all ease;
-}
-.delete-div{
-  a{
-      cursor:pointer;
-      display: inline-block;
-      text-align:center;
-      padding: 0.4em;
-      height: 2em;
-      width: 2em;
-      border-radius: 100%;
-      transition: 0.5s all ease;
-  }
-  a:hover{
-    background: #e2e2e2;
-    transition: 0.5s all ease;
-  }
-}
+        .dropdown {
+            margin-bottom: 10px;
+        }
 
-.box-list {
-  display: table;
-  position: relative;
-  margin: 0 auto;
-  background-color: white;
-  margin-top: 2%;
-  padding: 1% 3% 13% 3%;
-  box-shadow: 0 1px 1px #939393;
-  border-radius: 25px 0 25px 0;
-  border-bottom: 4px solid #26a69a;
-  border-top: 1px solid #e6e6e6;
+        .dropdown-menu {
+            position: absolute;
+            top: 81%;
+            left: 51px;
+            z-index: 1000;
+            display: none;
+            float: left;
+            min-width: 151px;
+            padding: 5px 0;
+            margin: 2px 0 0;
+            font-size: 14px;
+            text-align: left;
+            list-style: none;
+        }
 
-  .button {
-    height: 40px;
-  }
+        .box-list {
+            display: block;
+            text-align: center;
+            padding: 1% 13% 13% 13%;
+        }
 
-  table > tbody > tr > td {
-    padding: 8px 80px 8px 10px;
-  }
+        .button {
+            margin-bottom: 30px;
+        }
 
-  input {
-    padding: 8px 8px 8px 10px;
-    //padding: 7px 7px 10px 5px;
-  }
+        .box-list table > tbody > tr > td > .delete a {
+            margin-left: 0;
+        }
 
-  .delete > a:hover {
-    color: #d70000;
-  }
+        table, thead, tbody, th, td, tr {
+            display: block;
+            margin-left: 0;
+        }
 
-}
-#logout{
-  position: absolute;
-    top: 1em;
-    right: 2em;
-    z-index: 2;
-}
-.box-register {
-  display: table;
-  position: relative;
-  margin: 0 auto;
-  background-color: white;
-  margin-top: 2%;
-  margin-bottom: 2%;
-  padding: 1% 4% 1% 4%;
-  box-shadow: 0 1px 1px #939393;
-  border-radius: 25px 0 25px 0;
-  border-bottom: 4px solid #26a69a;
-  border-top: 1px solid #e6e6e6;
-  text-align: center;
+        thead tr {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
 
-  .button {
-    margin-bottom: 30px;
-  }
+        tr {
+            border: 1px solid #ccc;
+        }
 
-}
+        td {
+        / / retransform table cells to behave like a row text-align: left;
+            border: none;
+            border-bottom: 1px solid #eee;
+            position: relative;
+            padding: 8px 50px 8px 50px;
+            margin-left: 0;
+        }
 
-.box-success {
-  left: 35%;
-  display: none;
-  position: absolute;
-  width: 30%;
-  height: 40%;
-  background-color: white;
-  padding: 20px;
-  box-shadow: 0 1px 1px #939393;
-  border-radius: 25px 0 25px 0;
-  border-bottom: 4px solid #26a69a;
-  text-align: center;
-  border-top: 1px solid #e6e6e6;
-}
+    }
 
-.box-error {
-  display: table;
-  position: relative;
-  margin: 0 auto;
-  margin-top: 2%;
-  background-color: white;
-  padding: 1% 4% 2% 4%;
-  box-shadow: 0 1px 1px #939393;
-  border-radius: 25px 0 25px 0;
-  border-bottom: 4px solid #26a69a;
-  text-align: center;
-  border-top: 1px solid #e6e6e6;
+    .box-login {
+        display: table;
+        position: relative;
+        margin: 0 auto;
+        margin-top: 2%;
+        background-color: white;
+        padding: 1% 8% 1% 8%;
+        box-shadow: 0 1px 1px #939393;
+        border-radius: 25px 0 25px 0;
+        border-bottom: 4px solid #26a69a;
+        text-align: center;
+        border-top: 1px solid #e6e6e6;
 
-  h1 {
-    margin-top: 8%;
-    margin-bottom: 15%;
-  }
+    .button {
+        margin: 8% 0 8% 0;
+    }
 
-  #logo {
-    margin: 0 auto;
-  }
+    h1 {
+        margin: 8% 0 8% 0;
+    }
 
-  h4 {
-    margin-top: 5%;
-  }
+    input {
+        padding: 15px 15px 15px 15px;
+        margin: 20px;
+        text-align: left;
+    }
 
-  a {
-    color: #515252;
-  }
+    }
 
-  a:hover {
-    color: #26a69a;
-    transition: .2s all ease;
-    text-decoration: none;
-  }
+    .fake-input {
+        border: none;
+        background: none;
+        pointer-events: none;
+    }
 
-}
+    .edit-div {
+        cursor: pointer;
+        padding: 0.4em;
+        border-radius: 100%;
+        transition: 0.5s all ease;
+    }
 
-#logo {
-  background: url("subscribe.png");
-  height: 100px;
-  width: 100px;
-  margin-top: 50px;
-  align-self: center;
-  background-repeat: no-repeat;
-}
+    .edit-div:hover {
+        background: #e2e2e2;
+        transition: 0.5s all ease;
+    }
 
-#envelope {
-  background: url("envelope.png");
-  height: 128px;
-  width: 128px;
-  align-self: center;
-}
+    .delete-div {
 
-.button {
-  margin: 10px 10px;
-  text-decoration: none;
-  color: #fff;
-  background-color: #26a69a;
-  text-align: center;
-  letter-spacing: .5px;
-  cursor: pointer;
-  border: none;
-  border-radius: 2px;
-  display: inline-block;
-  height: 50px;
-  max-width: 180px;
-  line-height: 36px;
-  outline: 0;
-  padding: 0 2rem;
-  text-transform: uppercase;
-  vertical-align: middle;
-  transition: all .2s ease;
-}
+    a {
+        cursor: pointer;
+        display: inline-block;
+        text-align: center;
+        padding: 0.4em;
+        height: 2em;
+        width: 2em;
+        border-radius: 100%;
+        transition: 0.5s all ease;
+    }
 
-.button:hover {
-  background: #4fbe79;
-  transition: .5s all ease;
-}
+    a:hover {
+        background: #e2e2e2;
+        transition: 0.5s all ease;
+    }
 
-.error {
-  color: red;
-}
+    }
 
-.delete a {
-  text-decoration: none;
-  color: red;
-  font-weight: 700;
-  margin-left: 1em;
-}
+    .box-list {
+        display: table;
+        position: relative;
+        margin: 0 auto;
+        background-color: white;
+        margin-top: 2%;
+        padding: 1% 3% 13% 3%;
+        box-shadow: 0 1px 1px #939393;
+        border-radius: 25px 0 25px 0;
+        border-bottom: 4px solid #26a69a;
+        border-top: 1px solid #e6e6e6;
 
-#success {
-  color: green;
-  font-size: 1.4em;
-}
+    .button {
+        height: 40px;
+    }
 
-#register {
+    table > tbody > tr > td {
+        padding: 8px 80px 8px 10px;
+    }
 
-  #details {
-    margin: auto;
+    input {
+        padding: 8px 8px 8px 10px;
+    / / padding: 7 px 7 px 10 px 5 px;
+    }
+
+    .delete > a:hover {
+        color: #d70000;
+    }
+
+    }
+    #logout {
+        position: absolute;
+        top: 1em;
+        right: 2em;
+        z-index: 2;
+    }
+
+    .box-register {
+        display: table;
+        position: relative;
+        margin: 0 auto;
+        background-color: white;
+        margin-top: 2%;
+        margin-bottom: 2%;
+        padding: 1% 4% 1% 4%;
+        box-shadow: 0 1px 1px #939393;
+        border-radius: 25px 0 25px 0;
+        border-bottom: 4px solid #26a69a;
+        border-top: 1px solid #e6e6e6;
+        text-align: center;
+
+    .button {
+        margin-bottom: 30px;
+    }
+
+    }
+
+    .box-success {
+        left: 35%;
+        display: none;
+        position: absolute;
+        width: 30%;
+        height: 40%;
+        background-color: white;
+        padding: 20px;
+        box-shadow: 0 1px 1px #939393;
+        border-radius: 25px 0 25px 0;
+        border-bottom: 4px solid #26a69a;
+        text-align: center;
+        border-top: 1px solid #e6e6e6;
+    }
+
+    .box-error {
+        display: table;
+        position: relative;
+        margin: 0 auto;
+        margin-top: 2%;
+        background-color: white;
+        padding: 1% 4% 2% 4%;
+        box-shadow: 0 1px 1px #939393;
+        border-radius: 25px 0 25px 0;
+        border-bottom: 4px solid #26a69a;
+        text-align: center;
+        border-top: 1px solid #e6e6e6;
+
+    h1 {
+        margin-top: 8%;
+        margin-bottom: 15%;
+    }
+
+    #logo {
+        margin: 0 auto;
+    }
+
+    h4 {
+        margin-top: 5%;
+    }
+
+    a {
+        color: #515252;
+    }
+
+    a:hover {
+        color: #26a69a;
+        transition: .2s all ease;
+        text-decoration: none;
+    }
+
+    }
+
+    #logo {
+        background: url("subscribe.png");
+        height: 100px;
+        width: 100px;
+        margin-top: 50px;
+        align-self: center;
+        background-repeat: no-repeat;
+    }
+
+    #envelope {
+        background: url("envelope.png");
+        height: 128px;
+        width: 128px;
+        align-self: center;
+    }
+
+    .button {
+        margin: 10px 10px;
+        text-decoration: none;
+        color: #fff;
+        background-color: #26a69a;
+        text-align: center;
+        letter-spacing: .5px;
+        cursor: pointer;
+        border: none;
+        border-radius: 2px;
+        display: inline-block;
+        height: 50px;
+        max-width: 180px;
+        line-height: 36px;
+        outline: 0;
+        padding: 0 2rem;
+        text-transform: uppercase;
+        vertical-align: middle;
+        transition: all .2s ease;
+    }
+
+    .button:hover {
+        background: #4fbe79;
+        transition: .5s all ease;
+    }
+
+    .error {
+        color: red;
+    }
+
+    .delete a {
+        text-decoration: none;
+        color: red;
+        font-weight: 700;
+        margin-left: 1em;
+    }
+
+    #success {
+        color: green;
+        font-size: 1.4em;
+    }
+
+    #register {
+
+    #details {
+        margin: auto;
+
     div {
-      margin: 2em;
+        margin: 2em;
     }
+
     span {
-      display: block;
+        display: block;
     }
+
     input[type=text] {
-      width: 19em;
+        width: 19em;
     }
-  }
 
-  h4 {
-    display: block;
-    margin: auto;
-    margin-top: -2em;
-    margin-bottom: 20px;
-    width: 15em;
-  }
-  #submit {
-    display: block;
-    margin: auto;
-  }
+    }
 
-  #categories {
-    text-align: left;
-    margin: auto;
-    margin-top: 5em;
+    h4 {
+        display: block;
+        margin: auto;
+        margin-top: -2em;
+        margin-bottom: 20px;
+        width: 15em;
+    }
+
+    #submit {
+        display: block;
+        margin: auto;
+    }
+
+    #categories {
+        text-align: left;
+        margin: auto;
+        margin-top: 5em;
+
     .category-name {
-      font-family: 'Arial', sans;
-      color: #444;
-      font-size: 2em;
+        font-family: 'Arial', sans;
+        color: #444;
+        font-size: 2em;
     }
 
     h3 {
-      width: 8em;
-      margin: 0;
-      display: inline;
+        width: 8em;
+        margin: 0;
+        display: inline;
     }
 
     .flat-rounded-checkbox {
-      width: 120px;
-      height: 40px;
-      margin: 20px 50px;
-      position: relative;
-      top: -3em;
-      left: 11em;
+        width: 120px;
+        height: 40px;
+        margin: 20px 50px;
+        position: relative;
+        top: -3em;
+        left: 11em;
 
-      input[type=checkbox] {
+    input[type=checkbox] {
         visibility: hidden;
-      }
+    }
 
-      label {
+    label {
         display: block;
         width: 30px;
         height: 30px;
-        border-radius: 50px;kk
-        -webkit-transition: all .5s ease;
+        border-radius: 50px;
+        kk -webkit-transition: all .5s ease;
         -moz-transition: all .5s ease;
         -o-transition: all .5s ease;
         -ms-transition: all .5s ease;
@@ -652,8 +673,9 @@ p {
         z-index: 1;
         left: 8px;
         background: #FFF;
-      }
-      .button-rounded {
+    }
+
+    .button-rounded {
         -webkit-transition: all .5s ease;
         -moz-transition: all .5s ease;
         -o-transition: all .5s ease;
@@ -665,24 +687,21 @@ p {
         border-radius: 50px;
         position: relative;
         top: -30px;
-      }
-      input[type=checkbox]:checked ~ label {
-        left: 85px;
-      }
-      input[type=checkbox]:checked ~ div {
-        background: #4fbe79;
-      }
     }
-  }
-}
+
+    input[type=checkbox]:checked ~ label {
+        left: 85px;
+    }
+
+    input[type=checkbox]:checked ~ div {
+        background: #4fbe79;
+    }
+
+    }
+    }
+    }
 
 </style>
-
-
-
-
-
-
 
 
 </body>
