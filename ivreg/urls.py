@@ -21,8 +21,10 @@ from ivreg import views
 urlpatterns = [
     url(r'^$', views.index),
     url(r'^registration/$', views.registration, name='registration'),
+    url(r'^credentials/$', views.credentials, name='credentials'),
     url(r'^authorization/$', views.authorization, name='authorization'),
     url(r'^authentication/$', views.authentication, name='authentication'),
+    url(r'^authorization/(?P<voter_id>[0-9a-zA-Z]+)/$', views.authorization, name='authorization_complete'),
     url(r'^validate/$', views.validate, name='validate'),
     url(r'^ballot/(?P<ballot_id>[0-9a-zA-Z]+)/$', views.ballot, name='ballot'),
     url(r'^admin/', admin.site.urls),

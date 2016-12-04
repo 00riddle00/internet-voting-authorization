@@ -39,7 +39,7 @@ Autorizacija
 <div class="form-group">
 {#    <label for="password">Password</label>#}
 {#        <input type="text" id="copyTarget" value="{{ code }}" readonly="readonly" > <button id="copyButton">Copy to clipboard</button><br><br>#}
-    <input type="text" id="copyTarget" value="{{ code }}" readonly="readonly" >
+    <input type="text" id="copyTarget" value="{{ voter_id }}" readonly="readonly" >
 {#    <input type="password" name="password">#}
 </div>
 <div class="form-group">
@@ -59,7 +59,7 @@ Autorizacija
     <style>
         #copyTarget {
             font-weight: bold;
-            color: darkblue;
+            color: #447e9b;
             font-size: 18px;
             text-align: center;
             border-color: lightgrey;
@@ -70,7 +70,7 @@ Autorizacija
 {#            position: relative;#}
             display: flex;
             padding: 10px;
-{#            width: 200px;#}
+            width: 400px;
             height: 50px;
         }
     </style>

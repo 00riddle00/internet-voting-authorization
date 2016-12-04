@@ -1,7 +1,7 @@
 from django import forms
 
 
-from ivreg.models import Voter
+from ivreg.models import Voter, VoterData
 
 
 class RegistrationForm(forms.ModelForm):
@@ -25,3 +25,14 @@ class ValidationForm(forms.ModelForm):
             except Voter.DoesNotExist:
                 raise forms.ValidationError('Given ballot id does not exist.')
         return ballot_id
+
+
+
+class CredentialsForm(forms.ModelForm):
+
+    class Meta:
+        model = VoterData
+        fields = ['name', 'surname', 'id_code']
+
+
+
